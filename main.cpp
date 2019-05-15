@@ -5,6 +5,7 @@
 #include <string>
 
 #include <ctime>
+#include <cstdlib>
 #include <chrono>
 
 #include <SDL2/SDL.h>
@@ -13,6 +14,7 @@
 #include "Renderer.h"
 #include "InputManager.h"
 #include "Ship.h"
+#include "Asteroid.h"
 
 //read in window config file
 int win_width = 800;
@@ -26,6 +28,8 @@ int close_request = 0;
 
 int main(int argc, char** argv)
 {
+  srand(time(0));
+
   if(SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER) != 0)
   {
     printf("ERROR %s: SDL Initialization Failed!", SDL_GetError());
@@ -64,6 +68,7 @@ int main(int argc, char** argv)
 
   //game variables
   Ship* player = new Ship(win_width / 2, win_height / 2, 17, 17);
+  std::vector<Asteroid*> asteroids;
 
   //game loop
   while(!close_request)
@@ -79,6 +84,10 @@ int main(int argc, char** argv)
 
       //update objects
       player->update();
+      for(std::vector<Asteroid*>::iterator it = asteroids.begin(); it != asteroids.end(); ++it)
+      {
+        bool shot = (*it)->update(player->getBullets(), asteroids);
+      }
 
       updates++;
       delta--;
@@ -88,6 +97,10 @@ int main(int argc, char** argv)
     SDL_RenderClear(renderer);
 
     player->render();
+    for(std::vector<Asteroid*>::iterator it = asteroids.begin(); it != asteroids.end(); ++it)
+    {
+      (*it)->render();
+    }
 
     frames++;
     SDL_RenderPresent(renderer);

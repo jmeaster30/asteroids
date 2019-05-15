@@ -106,12 +106,13 @@ void Ship::update()
   }
 
   double bulletspd = 2;
-  if(im->getKeyState(SDL_SCANCODE_SPACE) == RELEASED)
+  int bulletLimit = 5;
+  if(im->getKeyState(SDL_SCANCODE_SPACE) == RELEASED && bullets.size() < 5)
   {
     bullets.push_back(new Bullet((double)nose.x,
                                  (double)nose.y,
-                                 bulletspd * cos(angle - M_PI_2),
-                                 bulletspd * sin(angle - M_PI_2),
+                                 bulletspd * cos(angle - M_PI_2) + velx,
+                                 bulletspd * sin(angle - M_PI_2) + vely,
                                  angle));
     //std::cout << "Bullet shot: " << bullets.size() << std::endl;
   }

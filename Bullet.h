@@ -12,6 +12,10 @@ public:
 
   void update();
   void render();
+
+  double getX();
+  double getY();
+
 private:
   double posx;
   double posy;
@@ -19,15 +23,6 @@ private:
   double vely;
 
   double angle;
-
-  //int width;
-  //int height;
-
-  //SDL_Point top;
-  //SDL_Point left;
-  //SDL_Point right;
-  //SDL_Point bottom;
-
 };
 
 #endif

@@ -1,5 +1,5 @@
 g++ -c main.cpp
-FILES=(InputManager Renderer Ship Bullet)
+FILES=(InputManager Renderer Ship Bullet Asteroid)
 OBJS=()
 for f in "${FILES[@]}"; do
   g++ -c "$f.cpp"
