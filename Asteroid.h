@@ -18,10 +18,18 @@ public:
   Asteroid(double x, double y, double vx, double vy, double rad);
   ~Asteroid();
 
-  bool update(std::vector<Bullet*> bullets, std::vector<Asteroid*> asteroids);
+  void update(std::vector<Bullet*>* bullets, std::vector<Asteroid*>* asteroids);
   void render();
 
+  double getX();
+  double getY();
+  double getRadius();
+
+  bool getDead();
+
 private:
+
+  bool dead;
 
   double posx;
   double posy;

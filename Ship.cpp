@@ -11,6 +11,9 @@ Ship::Ship(double x, double y, int w, int h)
   posx = x;
   posy = y;
 
+  velx = 0;
+  vely = 0;
+
   nose = {
     (int)(posx),
     (int)(posy - (h / 2))
@@ -25,6 +28,18 @@ Ship::Ship(double x, double y, int w, int h)
     (int)(posx + (w / 2)),
     (int)(posy + (h / 2))
   };
+
+  dead = false;
+}
+
+bool Ship::getDead()
+{
+  return dead;
+}
+
+std::vector<Bullet*>* Ship::getBullets()
+{
+  return &bullets;
 }
 
 SDL_Point turn(double posx, double posy, double centerx, double centery, double a)
@@ -37,7 +52,7 @@ SDL_Point turn(double posx, double posy, double centerx, double centery, double 
   return newpoint;
 }
 
-void Ship::update()
+void Ship::update(std::vector<Asteroid*>* asteroids)
 {
   double turnSpeed = 0.08;
   double thrust = 0.5;
@@ -74,6 +89,19 @@ void Ship::update()
     posy = r->getHeight() + border;
   else if(posy > r->getHeight() + border)
     posy = -border;
+
+  //collision
+  for(std::vector<Asteroid*>::iterator it = asteroids->begin(); it != asteroids->end(); ++it)
+  {
+    double dx = posx - (*it)->getX();
+    double dy = posy - (*it)->getY();
+    double rad = (*it)->getRadius();
+    if((dx * dx + dy * dy) <  rad * rad)
+    {
+      dead = true;
+      break;
+    }
+  }
 
   //calculate other points
   nose.x = posx;

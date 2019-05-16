@@ -4,6 +4,9 @@
 #include <iostream>
 #include <string>
 
+#define _USE_MATH_DEFINES
+
+#include <cmath>
 #include <ctime>
 #include <cstdlib>
 #include <chrono>
@@ -82,11 +85,32 @@ int main(int argc, char** argv)
       im->pollEvents();
       if(im->quitEvent()) close_request = 1;
 
-      //update objects
-      player->update();
-      for(std::vector<Asteroid*>::iterator it = asteroids.begin(); it != asteroids.end(); ++it)
+      //spawn asteroid
+      if(updates % 60 == 0 && asteroids.size() < 20)
       {
-        bool shot = (*it)->update(player->getBullets(), asteroids);
+        int radius = (rand() % 10) + 20;
+        int x = rand() % win_width;
+        int y = rand() % win_height;
+        int vel = (rand() % 2) + 1;
+        double angle = (rand() % 360) * (M_PI / 180);
+        asteroids.push_back(new Asteroid(x, y, vel * cos(angle), vel * sin(angle), radius));
+      }
+
+      //update objects
+      player->update(&asteroids);
+      if(player->getDead())
+      {
+        asteroids.clear();
+        player->getBullets()->clear();
+        player = new Ship(win_width / 2, win_height / 2, 17, 17);
+      }
+      for(int i = asteroids.size() - 1; i >= 0; i--)
+      {
+        (*(asteroids.begin() + i))->update(player->getBullets(), &asteroids);
+        if((*(asteroids.begin() + i))->getDead())
+        {
+          asteroids.erase(asteroids.begin() + i);
+        }
       }
 
       updates++;
@@ -108,7 +132,7 @@ int main(int argc, char** argv)
     if((std::chrono::steady_clock::now() - timer).count() > 1000)
     {
       timer = timer + std::chrono::milliseconds(1000);//add 1000 milliseconds
-      std::cout << updates << " ups, " << frames << " fps" << std::endl;
+      //std::cout << updates << " ups, " << frames << " fps" << std::endl;
       updates = 0;
       frames = 0;
     }

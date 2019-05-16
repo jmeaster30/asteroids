@@ -11,6 +11,7 @@
 #include "InputManager.h"
 #include "Renderer.h"
 #include "Bullet.h"
+#include "Asteroid.h"
 
 class Ship
 {
@@ -18,8 +19,12 @@ class Ship
     Ship(double x, double y, int width, int height);
     ~Ship();
 
-    void update();
+    void update(std::vector<Asteroid*>* asteroids);
     void render();
+
+    std::vector<Bullet*>* getBullets();
+
+    bool getDead();
 
   private:
     //input manager
@@ -27,6 +32,8 @@ class Ship
 
     int width;
     int height;
+
+    bool dead;
 
     //motion variables
     double posx;

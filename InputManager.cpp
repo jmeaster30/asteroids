@@ -4,7 +4,7 @@ InputManager* InputManager::instance_inputmanager = nullptr;
 
 InputManager::InputManager()
 {
-  std::cout << "InputManager Created!" << std::endl;
+  //std::cout << "InputManager Created!" << std::endl;
 }
 
 void InputManager::pollEvents()

@@ -11,14 +11,34 @@ Asteroid::Asteroid(double x, double y, double vx, double vy, double rad)
   for(int a = 0; a < 10; a++)
   {
     double angle = a * (2 * M_PI / 10);
-    double rad = radius;// - (2 * rand());
+    double rad = radius + ((rand() % 9) - 4);
     points.push_back(std::make_pair(angle, rad));
   }
 
-  std::cout << "Asteroid Created!! " << points.size() << std::endl;
+  dead = false;
 }
 
-bool Asteroid::update(std::vector<Bullet*> bullets, std::vector<Asteroid*> asteroids)
+double Asteroid::getX()
+{
+  return posx;
+}
+
+double Asteroid::getY()
+{
+  return posy;
+}
+
+double Asteroid::getRadius()
+{
+  return radius;
+}
+
+bool Asteroid::getDead()
+{
+  return dead;
+}
+
+void Asteroid::update(std::vector<Bullet*>* bullets, std::vector<Asteroid*>* asteroids)
 {
   posx += velx;
   posy += vely;
@@ -37,7 +57,7 @@ bool Asteroid::update(std::vector<Bullet*> bullets, std::vector<Asteroid*> aster
   else if(posy > r->getHeight() + border)
     posy = -border;
 
-  for(std::vector<Bullet*>::iterator it = bullets.begin(); it != bullets.end(); ++it)
+  for(std::vector<Bullet*>::iterator it = bullets->begin(); it != bullets->end(); ++it)
   {
     double bx = (*it)->getX();
     double by = (*it)->getY();
@@ -45,19 +65,23 @@ bool Asteroid::update(std::vector<Bullet*> bullets, std::vector<Asteroid*> aster
     double dy = posy - by;
     if((dx * dx + dy * dy) <= radius * radius)
     {
-      if(radius > 5)
+      if(radius > 15)
       {
-        asteroids.push_back(new Asteroid(posx + ((radius / 2) * rand()),
-                                         posy + ((radius / 2) * rand()),
-                                         velx * 2,
-                                         vely * 2,
-                                         radius / 2));
-        asteroids.push_back(new Asteroid(posx - ((radius / 2) * rand()),
-                                         posy - ((radius / 2) * rand()),
-                                         velx * 2,
-                                         vely * 2,
-                                         radius / 2));
+        int nr = radius / 2;
+        int nx = posx + ((rand() % 5) - 2);
+        int ny = posy + ((rand() % 5) - 2);
+        int nv = (rand() % 2) + 1;
+        double na = (rand() % 360) * (M_PI / 180);
+        asteroids->push_back(new Asteroid(nx, ny, nv * cos(na), nv * sin(na), nr));
+        nx = posx + ((rand() % 5) - 2);
+        ny = posy + ((rand() % 5) - 2);
+        nv = (rand() % 2) + 1;
+        na = (rand() % 360) * (M_PI / 180);
+        asteroids->push_back(new Asteroid(nx, ny, nv * cos(na), nv * sin(na), nr));
       }
+      bullets->erase(it);
+      dead = true;
+      break;
     }
   }
 }
