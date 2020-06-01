@@ -4,6 +4,8 @@
 #include <SDL2/SDL.h>
 #include "Renderer.h"
 
+//poopy
+
 class Bullet
 {
 public:
